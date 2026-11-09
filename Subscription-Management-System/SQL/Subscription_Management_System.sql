@@ -8,10 +8,6 @@ PURPOSE:
 Manage customers, subscription plans, subscription periods/renewals,
 payment attempts, and subscription status history.
 
-EXECUTION ORDER:
-Run this complete script from top to bottom in a fresh MySQL connection.
-The script drops and recreates the project database if it already exists.
-BACK UP any existing database named subscription_management_system before running.
 
 TABLES:
 1. customers
@@ -815,44 +811,6 @@ Q29. Calculate the percentage of billing periods paid successfully.
 Q30. Find customers whose successful payment revenue is above the average customer revenue.
 */
 
--- ============================================================================
--- PART 12: DEMO CALLS AND VALIDATION
--- Run these examples individually after creating the procedures and triggers.
--- Some demo calls INSERT or UPDATE data; do not repeatedly run them unless
--- you intend to create additional test records.
--- ============================================================================
-
--- Demo 1: register a customer.
--- CALL sp_register_customer('Demo Customer', 'demo@example.com', '9000000000');
-
--- Demo 2: create a subscription (OUT parameter).
--- SET @new_sub_id = 0;
--- CALL sp_create_subscription(1, 1, '2026-12-01', TRUE, @new_sub_id);
--- SELECT @new_sub_id AS created_subscription_id;
-
--- Demo 3: create a successful payment for the newly created subscription.
--- Find its pending period first:
--- SELECT * FROM subscription_periods WHERE subscription_id = @new_sub_id;
--- Then insert payment using the returned period_id:
--- INSERT INTO payments(period_id, amount, payment_method, payment_status, transaction_reference)
--- VALUES (<period_id>, 199.00, 'UPI', 'SUCCESS', 'TXN-DEMO-001');
--- The AFTER INSERT trigger marks the period PAID and activates the subscription.
-
--- Demo 4: calculate revenue with an OUT parameter.
--- SET @revenue = 0;
--- CALL sp_calculate_revenue('2026-01-01', '2026-12-31', @revenue);
--- SELECT @revenue AS total_revenue;
-
--- Demo 5: retrieve one customer's subscription details.
--- CALL sp_customer_subscription_details(1);
-
--- Demo 6: create a renewal period.
--- SET @new_period_id = 0;
--- CALL sp_create_renewal_period(1, @new_period_id);
--- SELECT @new_period_id AS created_period_id;
-
--- Demo 7: expire subscriptions as of a chosen date.
--- CALL sp_expire_subscriptions('2027-01-01');
 
 -- Validation: inspect all tables.
 SELECT * FROM customers;
